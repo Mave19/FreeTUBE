@@ -4,7 +4,7 @@ Hello, this is my first Laravel project and I called it FreeTUBE. I named it Fre
 
 # Technology used
 
-Client Side - HTML, CSS, Bootstrap, Javascript, Jquery, AJAX
-Server Side - PHP
-Database - Mysql
+Client Side - HTML, CSS, Bootstrap, Javascript, Jquery, AJAX <br>
+Server Side - PHP <br>
+Database - Mysql <br>
 Framework - Laravel

@@ -37,7 +37,7 @@ Free|TUBE Home
             <form class="card-body" id="post" enctype="multipart/form-data" autocomplete="off">
             @csrf
                 <input type="hidden" name="username" value="{{Auth::user()->username}}">
-                <input type="hidden" name="email" value="{{Auth::user()->email}}">   
+                <input type="hidden" name="email" value="{{Auth::user()->email}}">  
                 <div class="form-group">
                     <label for="title">Title:</label>
                     <input type="text" class="form-control" value="{{old('title')}}" name="title" id="title">
@@ -62,53 +62,18 @@ Free|TUBE Home
                 <div id="showposts"></div>
     </div>
         <!-- AJAX POST -->
-        <script>
-            $(document).ready(function() {
-                $('#post').on('submit', function(e){
-                    e.preventDefault();
-                    // NEEDED THIS WHEN YOU UPLOADING A FILE THROUGH AJAX
-                    var formData = new FormData($('#post')[0]);
-                    // SAVING OF POST
-                    $.ajax({
-                        type: "POST",
-                        url: "/post",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(data)
-                        {
-                            if($.isEmptyObject(data.error))
-                            {
-                                //Clearing the form after success
-                                $('#post')[0].reset();
-                                
-                                // Setting a setTimeout to fetch new posted data
-                                var refresh = setTimeout(function(){
-                                    $("#showposts").load('{{url("/post")}}').fadeIn(500);
-                                }, 1000);
-                            }
-                            else
-                            {
-                                showErrors(data.error);
-                            }
-                        }
-                    });
-                });
-            });
-            // SHOWING OF ERRORS
-            function showErrors(message)
-            {
-                $('.alert-danger').find('ul').empty();
-                $('.alert-danger').css('display', 'block');
+        <script src="{{asset('js/ajax/post.js')}}"></script>
+        <!-- END -->
 
-                $.each(message, function(key, value){
-                    $('.alert-danger').find('ul').append("<li>" + value + "</li>");
-                });
-            }
-            // FETCHING DATA POSTS ON START OF THE PAGE
+        <!-- FETCHING DATA POSTS ON START OF THE PAGE -->
+        <script>
+            // load url data
+            var url = "{{url('/post')}}";
+
             $('#loading').delay(800).fadeOut(500, function(){
                 $("#showposts").load('{{url("/post")}}');
             });
         </script>
+        <!-- END -->
     @endsection
 @endguest

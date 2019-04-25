@@ -67,7 +67,7 @@ Free|TUBE {{$showfeed->title}}
                         <!-- WHERE WE SHOW COMMENTS -->
                         <div id="showcomments"></div>     
                 <hr class="bg-light"> 
-                <!-- SAVE COMMENT -->
+                <!-- COMMENT FORM -->
                 <form id="postcomment">
                 @csrf
                     <input type="hidden" name="username" value="{{Auth::user()->username}}">
@@ -75,75 +75,29 @@ Free|TUBE {{$showfeed->title}}
                     <div class="form-group">
                         <textarea class="form-control" name="comment" id="comment">{{old('comment')}}</textarea>
                     </div>
-                    <!-- HEART/REACT BUTTON -->
-                    <button type="button" class="btn btn-danger btn-sm" id="Heart">
+                    <button type="submit" class="btn btn-success float-right">Comment</button>
+                </form>    
+                <!-- HEART/REACT FORM -->
+                <form id="Heart">
+                @csrf
+                    <input type="hidden" name="email" value="{{Auth::user()->email}}">
+                    <input type="hidden" name="username" value="{{Auth::user()->username}}">
+                    <input type="hidden" name="postid" value="{{$showfeed->id}}">
+                    <input type="hidden" name="reaction" value="Heart">
+
+                    <button type="submit" class="btn btn-danger btn-sm">
                         <i id="showreacts" class="fas fa-heart"> </i>
                     </button> 
-                    <!-- END -->
-                    <button type="submit" class="btn btn-success float-right">Comment</button>
-                </form>       
+                </form>  
             </div>
         </div>
     </div>  
     <!-- AJAX FOR COMMENT, & HEART REACTS -->
+        <script src="{{asset('js/ajax/commentreact.js')}}"></script>
+    <!-- END -->
+
+    <!-- FETCHING DATA -->
         <script>
-            $(document).ready(function() {
-                // SAVING OF COMMENTS
-                $('#postcomment').on('submit', function(e){
-                    e.preventDefault();
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/comment",
-                        data: $('#postcomment').serialize(),
-                        success: function(data)
-                        {
-                            if($.isEmptyObject(data.error))
-                            {
-                                // Clearing the form after success
-                                $('#postcomment')[0].reset();
-                            }
-                            else
-                            {
-                                showErrors(data.error);
-                            }
-                        }
-                    });
-                });
-                // SAVING REACTS
-                $('#Heart').click(function(e){
-                    e.preventDefault();
-                    // getting the data    
-                    var useremail = "{{Auth::user()->email}}";
-                    var username = "{{Auth::user()->username}}";
-                    var post_id = "{{$showfeed->id}}";
-                    var reaction = "Heart";
-                    // passing the data through ajax
-                    $.ajax({
-                        type: "POST",
-                        url: "/react",
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                        data: 
-                        {
-                            email: useremail,
-                            username: username,
-                            postid: post_id,
-                            reaction: reaction
-                        }
-                    });
-                });
-            });
-            // SHOWING OF ERRORS
-            function showErrors(message)
-            {
-                $('.alert-danger').find('ul').empty();
-                $('.alert-danger').css('display', 'block');
-
-                $.each(message, function(key, value){
-                    $('.alert-danger').find('ul').append("<li>" + value + "</li>");
-                });
-            }
-            // FETCHING OF DATA
             var refresh = setInterval(function(){
                 // FETCHING COMMENTS
                 $('#loading').delay(800).fadeOut(500, function(){
@@ -153,5 +107,6 @@ Free|TUBE {{$showfeed->title}}
                 $("#showreacts").load('{{url("/react/$showfeed->id")}}');
             }, 1000);
         </script>
+    <!-- END -->
     @endsection    
 @endguest
